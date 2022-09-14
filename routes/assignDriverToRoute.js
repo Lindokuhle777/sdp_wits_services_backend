@@ -1,25 +1,25 @@
 import express from "express";
 import { db } from "../firebase-config.js";
-import { getDocs, collection, updateDoc, doc, addDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { getDocs, collection, updateDoc, doc, addDoc, arrayUnion, arrayRemove, setDoc, deleteDoc } from "firebase/firestore";
 
 const router = express.Router();
 
 router.post("/", async (req, res) => {
     const { routeId, driver, position } = req.body;
-    const routesCollectionRef = doc(db, `Buses`, `${routeId}`);
+    console.log('hi');
+    const routesCollectionRef = doc(db, `Buses`, `${routeId}`, `driversOnRoute/${driver}`);
     try {
-        await updateDoc(routesCollectionRef, {
-            driversOnRoute: arrayUnion({
-                driver: driver,
-                position: position
-            })
+        await setDoc(routesCollectionRef,{
+            driver: driver,
+            position: position,
         });
 
+        res.send({'onShift': true});
     } catch (e) {
         console.log(e);
         console.log('hi');
+        res.send({'onShift': false});
     }
-    res.send('done');
 });
 
 export default router;
