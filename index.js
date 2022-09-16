@@ -5,6 +5,10 @@ import { getDocs, collection, doc, arrayRemove, arrayUnion, updateDoc } from "fi
 import getRoutes from "./routes/getRoutes.js";
 import assignDriverToRoute from "./routes/assignDriverToRoute.js";
 import removeDriverFromRoute from "./routes/removeDriverFromRoute.js";
+import Create from "./StaffRoutes/Create.js";
+import Menus from "./StaffRoutes/Menus.js";
+import Users from "./StaffRoutes/Users.js";
+
 const app = express();
 
 const PORT = process.env.PORT || 5000;
@@ -71,11 +75,21 @@ setInterval(async () => {
   }
 }, 50000);
 
+//Students routes
+
 app.use("/getRoutes", getRoutes);
 
 app.use("/assignDriverToRoute", assignDriverToRoute);
 
 app.use("/removeDriverFromRoute", removeDriverFromRoute);
+
+//Stuff Routes
+
+app.use("/Create",Create);
+app.use("/Menus",Menus);
+app.use("/Users",Users);
+
+
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
