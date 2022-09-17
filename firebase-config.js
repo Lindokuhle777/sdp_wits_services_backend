@@ -9,7 +9,7 @@ dotenv.config();
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: FIREBASE_API_KEY,
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "wits-services-ea5cf.firebaseapp.com",
   projectId: "wits-services-ea5cf",
   storageBucket: "wits-services-ea5cf.appspot.com",
