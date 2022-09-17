@@ -6,7 +6,7 @@ import {
   updateDoc,
   doc,
   addDoc,
-  getDocs,
+  getDoc,
   deleteDoc,
 } from "firebase/firestore";
 
@@ -31,9 +31,33 @@ router.post("/AssignDep", async (req, res) => {
     res.send({status:"error"});
   }
 
+});
 
+router.post("/GetDep",async (req, res)=>{
+  const email = req.body.email;
+
+  const currDoc = await getDoc(doc(db,"Users",email));
+
+  if(currDoc.exists()){
+    if(currDoc.data().department === undefined){
+      res.send({status:"new"});
+    }else{
+      if(currDoc.data().department === "Dining Services"){
+        res.send({status:"exists",department:currDoc.data().department,dhName:currDoc.data().dhName});
+      }else{
+        res.send({status:"exists",department:currDoc.data().department});
+      }
+    }
+
+  }else{
+    res.send({status:"error"});
+  }
 
   
+
+  
+
+
 });
 
 export default router;
