@@ -1,14 +1,15 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "@firebase/firestore";
-import { getStorage } from "@firebase/storage";
-import { getDatabase } from "@firebase/database";
+import dotenv from "dotenv";
+
+dotenv.config();
 // TODO: Add SDKs for Firebase products that yoku want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyD5hma8Y5uVWKnG0kOzurCRedMR9Er1uCM",
+  apiKey: FIREBASE_API_KEY,
   authDomain: "wits-services-ea5cf.firebaseapp.com",
   projectId: "wits-services-ea5cf",
   storageBucket: "wits-services-ea5cf.appspot.com",
