@@ -22,49 +22,37 @@ app.use(cors());
 //routes
 
 setInterval(async () => {
-  const usersCollectionRef = collection(db, "Buses/");
+  const busesCollectionRef = collection(db, "Buses");
   try {
-    const data = await getDocs(usersCollectionRef);
+    const data = await getDocs(busesCollectionRef);
     var response = [];
     if (data === null) {
+      console.log("No docs found");
     } else {
       data.forEach((doc) => {
         response.push(doc.data());
       });
 
-
       for (var i = 0; i < response.length; i++) {
-        // console.log(response[i]);
-        const routesCollectionRef = collection(db, `Buses`, `${response[i].id}`, `driversOnRoute/`);
-        const drivers = await getDocs(routesCollectionRef);
-        var driversOnRoute = [];
-        if (drivers === null) {
-        } else {
-          drivers.forEach((doc) => {
-            driversOnRoute.push(doc.data());
-          });
+        for (var k = 0; k < response[i].stops.length; k++) {
 
-        }
+          if (response[i].stops[k] === response[i].position &&
+            k + 1 < response[i].stops.length) {
 
-        for (var j = 0; j < driversOnRoute.length; j++) {
-          for (var k = 0; k < response[i].stops.length; k++) {
-            if (response[i].stops[k] === driversOnRoute[j].position &&
-              k + 1 < response[i].stops.length) {
-
-              await updateDoc(doc(db, `Buses`, `${response[i].id}`, `driversOnRoute/${driversOnRoute[j].driver}`), {
-                position: response[i].stops[k+1],
-              });
-              break;
-            }
-            else if (response[i].stops[k] === driversOnRoute[j].position &&
-              k + 1 === response[i].stops.length) {
-
-              await updateDoc(doc(db, `Buses`, `${response[i].id}`, `driversOnRoute/${driversOnRoute[j].driver}`), {
-                position: response[i].stops[0],
-              });
-              break;
-            }
+            await updateDoc(doc(db, `Buses`, `${response[i].id}`), {
+              position: response[i].stops[k + 1],
+            });
+            break;
           }
+          else if (response[i].stops[k] === response[i].position &&
+            k + 1 === response[i].stops.length) {
+
+            await updateDoc(doc(db, `Buses`, `${response[i].id}`), {
+              position: response[i].stops[0],
+            });
+            break;
+          }
+
         }
       }
     }
@@ -73,7 +61,7 @@ setInterval(async () => {
   } catch (e) {
     console.log(e);
   }
-}, 50000);
+}, 2000);
 
 //Students routes
 
@@ -85,9 +73,9 @@ app.use("/removeDriverFromRoute", removeDriverFromRoute);
 
 //Stuff Routes
 
-app.use("/Create",Create);
-app.use("/Menus",Menus);
-app.use("/Users",Users);
+app.use("/Create", Create);
+app.use("/Menus", Menus);
+app.use("/Users", Users);
 
 
 
