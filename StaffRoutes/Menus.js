@@ -36,12 +36,12 @@ const get_dhID = (dhName) => {
 router.post("/GetMenus", async (req, res) => {
   const { dhName } = req.body;
   let dhID = "";
-  let dinner = [];
-  let breakfast = [];
-  let lunch = [];
-  let selectedDinner = [];
-  let selectedBreakfast = [];
-  let selectedLunch = [];
+  let dinner = {};
+  let breakfast = {};
+  let lunch = {};
+  let selectedDinner;
+  let selectedBreakfast;
+  let selectedLunch;
 
   dhID = get_dhID(dhName);
 
@@ -49,49 +49,48 @@ router.post("/GetMenus", async (req, res) => {
 
   for (let i = 0; i < type.length; i++) {
     const curr = type[i];
-    const originalRef = collection(db, `Dining/OriginalMenu/${type[i]}`);
-    const currDocs = await getDocs(originalRef);
-    let temp = [];
-
-    currDocs.forEach((doc) => {
-      temp.push({ ...doc.data(), id: doc.id });
-    });
-
-    if (curr === "Breakfast") {
-      breakfast = temp;
-    } else if (curr === "Lunch") {
-      lunch = temp;
-    } else {
-      dinner = temp;
+    const originalRef = doc(db, `Dining`,curr);
+    const currDocs = await getDoc(originalRef);
+    if(curr==="Breakfast"){
+      breakfast = currDocs.data();
+    }
+    else if(curr==="Lunch"){
+      lunch = currDocs.data();
+    }else{
+      dinner = currDocs.data();
     }
   }
 
   const dhRef = doc(db, `Dining/DiningHalls/DiningHallNames`, dhID);
   const dh = await getDoc(dhRef);
 
-  selectedBreakfast = dh.data().selected.breakfast;
-  selectedLunch = dh.data().selected.lunch;
-  selectedDinner = dh.data().selected.dinner;
+  selectedBreakfast = dh.data().breakfast;
+  selectedLunch = dh.data().lunch;
+  selectedDinner = dh.data().dinner;
 
   res.send({
     original: { breakfast, lunch, dinner },
-    selected: { selectedBreakfast, selectedDinner, selectedLunch },
+    selected:{selectedLunch, selectedDinner,selectedBreakfast},
   });
 });
 
 router.post("/SelectedMenu", async (req, res) => {
-  const { selected, dhName,type } = req.body;
+  const { selected, dhName,type} = req.body;
   const dhID = get_dhID(dhName);
 
   const dhRef = doc(db, `Dining/DiningHalls/DiningHallNames`, dhID);
-  let currDoc = await getDoc(dhRef);
-  if(type === 'breakfast'){
-    await setDoc(dhRef,{...currDoc.data(),selected:{...currDoc.data().selected,breakfast:selected}});
-  }else if(type === 'lunch'){
-    await setDoc(dhRef,{...currDoc.data(),selected:{...currDoc.data().selected,lunch:selected}});
-  }else{
-    await setDoc(dhRef,{...currDoc.data(),selected:{...currDoc.data().selected,dinner:selected}});
-  }
+  const currDoc = await getDoc(dhRef);
+
+  if(type === "breakfast"){
+   const old = currDoc.data().breakfast;
+   await updateDoc(dhRef,{breakfast:{...old,...selected}});
+  }else if(type === "lunch"){
+    const old = currDoc.data().lunch;
+    await updateDoc(dhRef,{lunch:{...old,...selected}});
+   }else{
+    const old = currDoc.data().dinner;
+    await updateDoc(dhRef,{dinner:{...old,...selected}});
+   }
 
   res.send({ status: "added" });
 });
