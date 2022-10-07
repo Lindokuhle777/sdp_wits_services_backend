@@ -22,6 +22,7 @@ router.post("/StartShift", async (req, res) => {
 
   await updateDoc(ref, {
     unavailableCars: arrayUnion(`${info.numPlate}`),
+    takenCampus: arrayUnion(`${info.campusName}`),
   });
 
   if (info.campusName === "Main Campus") {
@@ -44,47 +45,26 @@ router.post("/StartShift", async (req, res) => {
 });
 
 router.post("/EndShift", async (req, res) => {
-  const { campusName } = req.body;
+  const { campusName,numPlate } = req.body;
 
   const ref = doc(db, "CampusControl", "Working");
 
-  const workingSnap = await getDoc(ref);
+  await updateDoc(ref, {
+        unavailableCars: arrayRemove(`${numPlate}`),
+        takenCampus: arrayRemove(`${campusName}`),
+      });
 
   if (campusName === "Main Campus") {
     await updateDoc(ref, { "mainCampus.taken": false });
-    let temp = workingSnap.data().mainCampus.numPlate;
-    if (temp !== undefined) {
-      await updateDoc(ref, {
-        unavailableCars: arrayRemove(`${temp}`),
-      });
-    }
     res.send({ status: "success" });
   } else if (campusName === "Education Campus") {
     await updateDoc(ref, { "educationCampus.taken": false });
-    let temp = workingSnap.data().educationCampus.numPlate;
-    if (temp !== undefined) {
-      await updateDoc(ref, {
-        unavailableCars: arrayRemove(`${temp}`),
-      });
-    }
     res.send({ status: "success" });
   } else if (campusName === "Business School") {
     await updateDoc(ref, { "businessSchool.taken": false });
-    let temp = workingSnap.data().businessSchool.numPlate;
-    if (temp !== undefined) {
-      await updateDoc(ref, {
-        unavailableCars: arrayRemove(`${temp}`),
-      });
-    }
     res.send({ status: "success" });
   } else if (campusName === "Health Campus") {
     await updateDoc(ref, { "healthCampus.taken": false });
-    let temp = workingSnap.data().healthCampus.numPlate;
-    if (temp !== undefined) {
-      await updateDoc(ref, {
-        unavailableCars: arrayRemove(`${temp}`),
-      });
-    }
     res.send({ status: "success" });
   } else {
     res.send({ status: "Incorrect campus name" });
@@ -113,5 +93,28 @@ router.get("/GetVehicles", async (req, res) => {
 
   res.send({vehicles:out,status:"success"});
 });
+
+router.get("/GetCampus", async (req, res) => {
+    let takenCampus = [];
+    const ref = doc(db, "CampusControl", "Working");
+    const snap = await getDoc(ref);
+  
+    if (snap.exists()) {
+      let temp = snap.data().takenCampus;
+      if (temp !== undefined) {
+        takenCampus = [...temp];
+      }
+    }
+  
+    const campusRef = doc(db, "CampusControl", "Original");
+  
+    const campusSnap = await getDoc(campusRef);
+  
+    const out = campusSnap
+      .data()
+      .campus.filter((item) => !takenCampus.includes(item));
+  
+    res.send({campus:out,status:"success"});
+  });
 
 export default router;
