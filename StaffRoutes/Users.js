@@ -52,12 +52,6 @@ router.post("/GetDep",async (req, res)=>{
   }else{
     res.send({status:"error"});
   }
-
-  
-
-  
-
-
 });
 
 export default router;

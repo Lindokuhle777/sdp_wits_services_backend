@@ -8,6 +8,7 @@ import removeDriverFromRoute from "./routes/removeDriverFromRoute.js";
 import Create from "./StaffRoutes/Create.js";
 import Menus from "./StaffRoutes/Menus.js";
 import Users from "./StaffRoutes/Users.js";
+import ccdu from "./StaffRoutes/ccduFolder/ccdu.js";
 
 const app = express();
 
@@ -76,6 +77,7 @@ app.use("/removeDriverFromRoute", removeDriverFromRoute);
 app.use("/Create", Create);
 app.use("/Menus", Menus);
 app.use("/Users", Users);
+app.use("/ccdu",ccdu);//anything that starts with ccdu, use the file ccdu.js
 
 
 
