@@ -9,6 +9,8 @@ import Create from "./StaffRoutes/Create.js";
 import Menus from "./StaffRoutes/Menus.js";
 import Users from "./StaffRoutes/Users.js";
 import ccdu from "./StaffRoutes/ccduFolder/ccdu.js";
+import tempRoutes from "./routes/CampusControl/tempRoutes.js";
+import Working from "./routes/CampusControl/Working.js";
 
 const app = express();
 
@@ -69,16 +71,20 @@ setInterval(async () => {
 app.use("/getRoutes", getRoutes);
 
 app.use("/assignDriverToRoute", assignDriverToRoute);
-
 app.use("/removeDriverFromRoute", removeDriverFromRoute);
 
-//Stuff Routes
 
+
+//Stuff Routes
+//Dining
 app.use("/Create", Create);
 app.use("/Menus", Menus);
 app.use("/Users", Users);
 app.use("/ccdu",ccdu);//anything that starts with ccdu, use the file ccdu.js
 
+//Campus control
+app.use("/tempRoutes",tempRoutes);
+app.use("/CampusControl",Working);
 
 
 app.listen(PORT, () => {
