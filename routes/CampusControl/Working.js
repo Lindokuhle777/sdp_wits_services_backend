@@ -28,24 +28,6 @@ router.post("/StartShift", async (req, res) => {
 
   await updateDoc(ref, { ...info });
     res.send({ status: "success" });
-
-  // if (info.campusName === "Main Campus") {
-  //   await updateDoc(ref, { mainCampus: info });
-  //   res.send({ status: "success" });
-  // } else if (info.campusName === "Education Campus") {
-  //   await updateDoc(ref, { educationCampus: info });
-  //   res.send({ status: "success" });
-  // } else if (info.campusName === "Business School") {
-  //   await updateDoc(ref, { businessSchool: info });
-  //   res.send({ status: "success" });
-  // } else if (info.campusName === "Health Campus") {
-  //   await updateDoc(ref, { healthCampus: info });
-  //   res.send({ status: "success" });
-  // } else {
-  //   res.send({ status: "Incorrect campus name" });
-  // }
-
-  // res.send({status: "success"});
 });
 
 router.post("/EndShift", async (req, res) => {
@@ -60,22 +42,6 @@ router.post("/EndShift", async (req, res) => {
       });
   await updateDoc(ref, { taken: false });
   res.send({ status: "success" });
-
-  // if (campusName === "Main Campus") {
-  //   await updateDoc(ref, { "mainCampus.taken": false });
-  //   res.send({ status: "success" });
-  // } else if (campusName === "Education Campus") {
-  //   await updateDoc(ref, { "educationCampus.taken": false });
-  //   res.send({ status: "success" });
-  // } else if (campusName === "Business School") {
-  //   await updateDoc(ref, { "businessSchool.taken": false });
-  //   res.send({ status: "success" });
-  // } else if (campusName === "Health Campus") {
-  //   await updateDoc(ref, { "healthCampus.taken": false });
-  //   res.send({ status: "success" });
-  // } else {
-  //   res.send({ status: "Incorrect campus name" });
-  // }
 });
 
 router.get("/GetVehicles", async (req, res) => {
@@ -123,5 +89,7 @@ router.get("/GetCampus", async (req, res) => {
   
     res.send({campus:out,status:"success"});
   });
+
+
 
 export default router;

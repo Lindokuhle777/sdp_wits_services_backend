@@ -10,6 +10,7 @@ import Menus from "./StaffRoutes/Menus.js";
 import Users from "./StaffRoutes/Users.js";
 import tempRoutes from "./routes/CampusControl/tempRoutes.js";
 import Working from "./routes/CampusControl/Working.js";
+import Students from "./routes/CampusControl/Students.js";
 
 const app = express();
 
@@ -83,6 +84,7 @@ app.use("/Users", Users);
 //Campus control
 app.use("/tempRoutes",tempRoutes);
 app.use("/CampusControl",Working);
+app.use("/Students",Students);
 
 
 app.listen(PORT, () => {
